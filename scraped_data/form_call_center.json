@@ -1,0 +1,65 @@
+{
+  "name": "Form Call Center",
+  "url": "https://www.tel2tellcallcenter.com/form/22/สมัครงาน-callcenter",
+  "title": "ร่วมงานกับ เทล ทู เทล",
+  "meta_description": "Job Positions",
+  "headings": [
+    "<h2> CONTACT US",
+    "<h4> 0890404627",
+    "<h4> EMAIL nattapon@tel2tell.com",
+    "<h3> @ Copyright 2017 All Rights Reserved. Tel2tellcallcenter.com"
+  ],
+  "images": [
+    {
+      "src": "https://image.makewebcdn.com/makeweb/m_1920x0/LFlha9Qld/DefaultData/67EEEC86_8D87_4A7B_BDB0_869EE700FDEA.jpeg?v=202405291424",
+      "alt": "Call center"
+    },
+    {
+      "src": "https://image.makewebcdn.com/makeweb/m_200x200/LFlha9Qld/DefaultData/67EEEC86_8D87_4A7B_BDB0_869EE700FDEA.jpeg?v=202405291424",
+      "alt": "Call center"
+    }
+  ],
+  "forms": [
+    {
+      "action": "",
+      "inputs": [
+        {
+          "type": "hidden",
+          "name": "dataJson",
+          "placeholder": "",
+          "id": ""
+        },
+        {
+          "type": "hidden",
+          "name": "currentUrl",
+          "placeholder": "",
+          "id": ""
+        },
+        {
+          "type": "hidden",
+          "name": "formID",
+          "placeholder": "",
+          "id": ""
+        },
+        {
+          "type": "hidden",
+          "name": "hiddenActionForm",
+          "placeholder": "",
+          "id": "hiddenActionForm"
+        }
+      ]
+    },
+    {
+      "action": "",
+      "inputs": [
+        {
+          "type": "text",
+          "name": "email",
+          "placeholder": "Email",
+          "id": "email"
+        }
+      ]
+    }
+  ],
+  "text": "Home\nArapapa Shop\nFG Logistic\nTel2Solar\nContact\nForum\nOutbond Callcenter\nVDO Production\nSales Admin\nเพิ่มเติม\nHome\nArapapa Shop\nFG Logistic\nTel2Solar\nContact\nForum\nOutbond Callcenter\nVDO Production\nSales Admin\nเพิ่มเติม\nรายละเอียดงาน\nCallcenter TV **รายได้รวม 11,000 และ คอมมิชชั่น**\nรับสายและจำหน่ายสินค้าในรายการโทรทัศน์\n(ทำเป็นกะ) ช่วงเวลา 09.00-23.00 น.\nคุณสมบัติผู้สมัคร\nเพศชาย/ หญิง อายุ 18-40ปี\nวุฒิ ม.3 ขึ้นไป\nสามารถรับแรงกดดันได้ดี\nมีบุคลิกภาพดี มั่นใจในตัวเอง\nพร้อมเริ่มงานทันที\nสมัครและสัมภาษณ์ทันที\nเอกสารประกอบการสมัครงาน\nสำเนาบัตรประชาชน\nสำเนาทะเบียนบ้าน\nสำเนาวุฒิการศึกษา\nสำเนาใบผ่านงาน (ถ้ามี)\nรูปถ่ายขนาด 1นิ้ว จำนวน 1 ใบ\nฉันรับทราบและยอมรับ\nนโยบายความเป็นส่วนตัว\nส่ง\nกรุณาเลือก\nรองรับนามสกุลไฟล์\nขนาดไฟล์ต้องไม่เกิน\nMB\nCONTACT US\n0890404627\nEMAIL nattapon@tel2tell.com\nลงทะเบียนเพื่อรับข่าวสารจากเรา\nSubscribe\nได้รับข้อมูลของคุณเรียบร้อยแล้ว\nตกลง\nSEBIZ\nTel2tell\nFG Logistics\nWork with us\n@ Copyright 2017 All Rights Reserved. Tel2tellcallcenter.com\nผู้เข้าชมทั้งหมด\n323,359\nผู้เข้าชมวันนี้\n194\nผู้เข้าชมขณะนี้\n45"
+}

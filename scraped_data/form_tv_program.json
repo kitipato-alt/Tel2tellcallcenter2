@@ -1,0 +1,69 @@
+{
+  "name": "Form TV Program",
+  "url": "https://www.tel2tellcallcenter.com/form/62/สนใจออกรายการทีวี-",
+  "title": "สนใจออกรายการทีวี?",
+  "meta_description": "เราพร้อมแนะนำบริการและวิเคราะห์ข้อมูลให้คุณตามประเภทสินค้าโดยทีมงานมืออาชีพ",
+  "headings": [
+    "<h2> CONTACT US",
+    "<h4> 0890404627",
+    "<h4> EMAIL nattapon@tel2tell.com",
+    "<h3> @ Copyright 2017 All Rights Reserved. Tel2tellcallcenter.com"
+  ],
+  "images": [
+    {
+      "src": "https://image.makewebcdn.com/makeweb/m_1920x0/LFlha9Qld/DefaultData/67EEEC86_8D87_4A7B_BDB0_869EE700FDEA.jpeg?v=202405291424",
+      "alt": "Call center"
+    },
+    {
+      "src": "https://image.makewebcdn.com/makeweb/m_200x200/LFlha9Qld/DefaultData/67EEEC86_8D87_4A7B_BDB0_869EE700FDEA.jpeg?v=202405291424",
+      "alt": "Call center"
+    },
+    {
+      "src": "https://image.makewebeasy.net/makeweb/0/LFlha9Qld/DefaultData/IMG_3035.jpg?v=202012190947",
+      "alt": ""
+    }
+  ],
+  "forms": [
+    {
+      "action": "",
+      "inputs": [
+        {
+          "type": "hidden",
+          "name": "dataJson",
+          "placeholder": "",
+          "id": ""
+        },
+        {
+          "type": "hidden",
+          "name": "currentUrl",
+          "placeholder": "",
+          "id": ""
+        },
+        {
+          "type": "hidden",
+          "name": "formID",
+          "placeholder": "",
+          "id": ""
+        },
+        {
+          "type": "hidden",
+          "name": "hiddenActionForm",
+          "placeholder": "",
+          "id": "hiddenActionForm"
+        }
+      ]
+    },
+    {
+      "action": "",
+      "inputs": [
+        {
+          "type": "text",
+          "name": "email",
+          "placeholder": "Email",
+          "id": "email"
+        }
+      ]
+    }
+  ],
+  "text": "Home\nArapapa Shop\nFG Logistic\nTel2Solar\nContact\nForum\nOutbond Callcenter\nVDO Production\nSales Admin\nเพิ่มเติม\nHome\nArapapa Shop\nFG Logistic\nTel2Solar\nContact\nForum\nOutbond Callcenter\nVDO Production\nSales Admin\nเพิ่มเติม\nสนใจออกรายการทีวี?\nฉันรับทราบและยอมรับ\nนโยบายความเป็นส่วนตัว\nส่ง\nกรุณาเลือก\nรองรับนามสกุลไฟล์\nขนาดไฟล์ต้องไม่เกิน\nMB\nCONTACT US\n0890404627\nEMAIL nattapon@tel2tell.com\nลงทะเบียนเพื่อรับข่าวสารจากเรา\nSubscribe\nได้รับข้อมูลของคุณเรียบร้อยแล้ว\nตกลง\nSEBIZ\nTel2tell\nFG Logistics\nWork with us\n@ Copyright 2017 All Rights Reserved. Tel2tellcallcenter.com\nผู้เข้าชมทั้งหมด\n323,360\nผู้เข้าชมวันนี้\n195\nผู้เข้าชมขณะนี้\n46"
+}
