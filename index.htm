@@ -208,14 +208,14 @@ a{color:#21333F}a:hover{color:#8A6B32}
 <a href="http://line.me/ti/p/~manzx3" style="text-decoration: none">LINE: manzx3</a>
 </div>
 </div>
-<form style="flex: 1 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E4DDD0; border-radius: 24px; padding: 32px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+<form id="contactLeadForm" onsubmit="submitContactLead(event)" style="flex: 1 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E4DDD0; border-radius: 24px; padding: 32px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px">
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">ชื่อผู้ติดต่อ / บริษัท<input type="text" placeholder="คุณสมชาย (บริษัท ABC)" style="font: inherit; font-weight: 400; font-size: 16px; padding: 12px 14px; border: 1px solid #C8C0B2; border-radius: 12px; background: #FBFAF7"></label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">เบอร์โทรศัพท์<input type="tel" placeholder="081-234-5678" style="font: inherit; font-weight: 400; font-size: 16px; padding: 12px 14px; border: 1px solid #C8C0B2; border-radius: 12px; background: #FBFAF7"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">ชื่อผู้ติดต่อ / บริษัท<input type="text" id="leadName" required placeholder="คุณสมชาย (บริษัท ABC)" style="font: inherit; font-weight: 400; font-size: 16px; padding: 12px 14px; border: 1px solid #C8C0B2; border-radius: 12px; background: #FBFAF7"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">เบอร์โทรศัพท์<input type="tel" id="leadPhone" required placeholder="081-234-5678" style="font: inherit; font-weight: 400; font-size: 16px; padding: 12px 14px; border: 1px solid #C8C0B2; border-radius: 12px; background: #FBFAF7"></label>
 </div>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">อีเมล<input type="email" placeholder="you@company.com" style="font: inherit; font-weight: 400; font-size: 16px; padding: 12px 14px; border: 1px solid #C8C0B2; border-radius: 12px; background: #FBFAF7"></label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">รายละเอียดที่ต้องการปรึกษา<textarea rows="4" placeholder="เช่น ต้องการทีม Telesales 5 ที่นั่ง หรือบริการตอบแชทตลอด 24 ชั่วโมง" style="font: inherit; font-weight: 400; font-size: 16px; padding: 12px 14px; border: 1px solid #C8C0B2; border-radius: 12px; background: #FBFAF7; resize: vertical"></textarea></label>
-<button type="button" style="font: inherit; font-weight: 600; font-size: 16px; background: #21333F; color: #F7F4EE; border: 0; border-radius: 999px; padding: 16px; min-height: 48px; cursor: pointer">ส่งข้อมูลเพื่อขอรับใบเสนอราคา</button>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">อีเมล<input type="email" id="leadEmail" placeholder="you@company.com" style="font: inherit; font-weight: 400; font-size: 16px; padding: 12px 14px; border: 1px solid #C8C0B2; border-radius: 12px; background: #FBFAF7"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">รายละเอียดที่ต้องการปรึกษา<textarea id="leadMessage" rows="4" placeholder="เช่น ต้องการทีม Telesales 5 ที่นั่ง หรือบริการตอบแชทตลอด 24 ชั่วโมง" style="font: inherit; font-weight: 400; font-size: 16px; padding: 12px 14px; border: 1px solid #C8C0B2; border-radius: 12px; background: #FBFAF7; resize: vertical"></textarea></label>
+<button type="submit" style="font: inherit; font-weight: 600; font-size: 16px; background: #21333F; color: #F7F4EE; border: 0; border-radius: 999px; padding: 16px; min-height: 48px; cursor: pointer">ส่งข้อมูลเพื่อขอรับใบเสนอราคา</button>
 <p style="margin: 0; font-size: 13px; color: #5B6770; text-align: center">ข้อมูลของท่านจะถูกเก็บเป็นความลับ และใช้เพื่อการติดต่อกลับเท่านั้น</p>
 </form>
 </section>
@@ -237,6 +237,7 @@ a{color:#21333F}a:hover{color:#8A6B32}
 <a href="vdo-production.html" style="color: #C9D1D6; text-decoration: none">VDO Production</a>
 <a href="sales-admin.html" style="color: #C9D1D6; text-decoration: none">Sales Admin</a>
 <a href="jobs.html" style="color: #CDB585; text-decoration: none">ร่วมงานกับเรา (สมัครงาน)</a>
+<a href="admin.html" style="color: #A9B4BC; text-decoration: none; font-size: 13px; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px">🔒 ระบบหลังบ้าน (Admin)</a>
 </nav>
 <nav aria-label="ติดตามเรา" style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 10px">
 <strong style="color: #F7F4EE; font-size: 15px; font-weight: 600">ติดตามเรา</strong>
@@ -251,5 +252,37 @@ a{color:#21333F}a:hover{color:#8A6B32}
 </footer>
 
 </div>
+<script>
+function submitContactLead(e) {
+  e.preventDefault();
+  const name = document.getElementById('leadName').value.trim();
+  const phone = document.getElementById('leadPhone').value.trim();
+  const email = document.getElementById('leadEmail').value.trim();
+  const msg = document.getElementById('leadMessage').value.trim();
+  if (!name || !phone) {
+    alert('กรุณากรอกชื่อผู้ติดต่อ และเบอร์โทรศัพท์');
+    return;
+  }
+  const now = new Date();
+  const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  const newLead = {
+    id: 'L-' + Math.floor(1000 + Math.random() * 9000),
+    date: dateStr,
+    name: name,
+    phone: phone,
+    email: email,
+    service: 'ขอรับใบเสนอราคาบริการ Call Center / Admin',
+    message: msg,
+    status: 'pending'
+  };
+  try {
+    let list = JSON.parse(localStorage.getItem('tel2tell_leads') || '[]');
+    list.unshift(newLead);
+    localStorage.setItem('tel2tell_leads', JSON.stringify(list));
+  } catch(err){}
+  alert('ขอบพระคุณครับ! ข้อมูลขอรับใบเสนอราคาของท่านถูกส่งเข้าระบบเรียบร้อยแล้ว\nทีมงาน Tel2Tell จะติดต่อกลับที่เบอร์ ' + phone + ' ภายใน 15 นาทีครับ');
+  document.getElementById('contactLeadForm').reset();
+}
+</script>
 </body>
 </html>

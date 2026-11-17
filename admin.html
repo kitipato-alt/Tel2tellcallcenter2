@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบจัดการหลังบ้าน | Tel2Tell Contact Center Admin Portal</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#21333F',
+              dark: '#16232C',
+              gold: '#CDB585',
+              golddark: '#8A6B32',
+              cream: '#FBFAF7',
+              border: '#E4DDD0',
+              accent: '#0284c7'
+            }
+          },
+          fontFamily: {
+            sans: ['Kanit', 'sans-serif'],
+            body: ['Sarabun', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Sarabun', sans-serif; background-color: #F4F6F8; color: #1E293B; }
+    h1, h2, h3, h4, .font-heading { font-family: 'Kanit', sans-serif; }
+    .badge-pending { background-color: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .badge-contacted { background-color: #E0E7FF; color: #3730A3; border: 1px solid #C7D2FE; }
+    .badge-quoted { background-color: #E0F2FE; color: #075985; border: 1px solid #BAE6FD; }
+    .badge-won { background-color: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+    .badge-lost { background-color: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- ==================== LOGIN MODAL ==================== -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-100 relative">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center p-3 bg-brand-navy rounded-2xl mb-3 shadow-md">
+          <img src="images/logo.png" alt="Tel2Tell" class="h-8 w-auto">
+        </div>
+        <h2 class="text-2xl font-bold text-brand-navy font-heading">เข้าสู่ระบบหลังบ้าน (Admin)</h2>
+        <p class="text-sm text-slate-500 mt-1">Tel2Tell Contact Center Backoffice Portal</p>
+      </div>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 mb-5 flex items-start gap-2">
+        <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div>
+          <span class="font-bold">รหัสทดสอบสำหรับผู้ตรวจงาน:</span><br>
+          ชื่อผู้ใช้: <code class="bg-amber-100 px-1 py-0.5 rounded font-mono font-bold">admin</code> / รหัสผ่าน: <code class="bg-amber-100 px-1 py-0.5 rounded font-mono font-bold">tel2tell2026</code>
+        </div>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อผู้ใช้งาน (Username)</label>
+          <input type="text" id="loginUser" required value="admin" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-gold focus:outline-none text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">รหัสผ่าน (Password)</label>
+          <input type="password" id="loginPass" required value="tel2tell2026" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-gold focus:outline-none text-sm">
+        </div>
+        <button type="submit" class="w-full py-3 bg-brand-navy hover:bg-brand-dark text-white rounded-xl font-heading font-medium transition shadow-md flex items-center justify-center gap-2">
+          <span>เข้าสู่ระบบหลังบ้าน</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <a href="index.html" class="hover:text-brand-navy flex items-center gap-1 font-medium">
+          ← กลับหน้าเว็บไซต์หลัก
+        </a>
+        <button onclick="quickDemoLogin()" class="text-brand-golddark hover:underline font-bold">
+          ⚡ 1-Click Demo เข้าทันที
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN ADMIN APP ==================== -->
+  <div id="adminApp" class="flex-1 flex flex-col hidden">
+    <!-- Top Header -->
+    <header class="bg-brand-navy text-white sticky top-0 z-30 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <a href="admin.html" class="flex items-center gap-3">
+            <img src="images/logo.png" alt="Tel2Tell" class="h-8 w-auto">
+            <span class="bg-brand-gold/20 text-brand-gold text-xs px-2.5 py-1 rounded-full font-heading font-semibold border border-brand-gold/30">
+              Admin & CRM Backoffice
+            </span>
+          </a>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="index.html" target="_blank" class="hidden sm:inline-flex items-center gap-1 text-xs bg-slate-700/60 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg transition border border-slate-600">
+            <span>🌐 ดูหน้าเว็บหลัก</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          </a>
+          <div class="h-4 w-px bg-slate-700 hidden sm:block"></div>
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-brand-gold text-brand-navy font-bold flex items-center justify-center text-xs font-heading">
+              AD
+            </div>
+            <div class="hidden md:block text-left">
+              <div class="text-xs font-bold leading-tight">ผู้ดูแลระบบ (Admin)</div>
+              <div class="text-[10px] text-slate-400">info@tel2tell.com</div>
+            </div>
+          </div>
+          <button onclick="handleLogout()" title="ออกจากระบบ" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="bg-brand-dark/95 border-t border-slate-700/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto text-sm font-heading">
+          <button onclick="switchTab('dashboard')" id="tabBtn-dashboard" class="tab-btn px-4 py-3 border-b-2 border-brand-gold text-brand-gold font-medium flex items-center gap-2 whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            <span>ภาพรวม (Dashboard)</span>
+          </button>
+          <button onclick="switchTab('leads')" id="tabBtn-leads" class="tab-btn px-4 py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium flex items-center gap-2 whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            <span>คำขอใบเสนอราคา (Leads)</span>
+            <span id="badgeLeadCount" class="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">0</span>
+          </button>
+          <button onclick="switchTab('jobs')" id="tabBtn-jobs" class="tab-btn px-4 py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium flex items-center gap-2 whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            <span>จัดการผู้สมัครงาน (HR)</span>
+            <span id="badgeJobCount" class="bg-amber-500 text-slate-900 text-[10px] px-1.5 py-0.5 rounded-full font-bold">0</span>
+          </button>
+          <button onclick="switchTab('settings')" id="tabBtn-settings" class="tab-btn px-4 py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium flex items-center gap-2 whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span>ตั้งค่าระบบ & LINE</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+      <!-- ==================== TAB 1: DASHBOARD ==================== -->
+      <section id="view-dashboard" class="space-y-6">
+        <!-- Top Banner / Summary -->
+        <div class="bg-gradient-to-r from-brand-navy via-[#2C4454] to-brand-navy rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <div class="inline-flex items-center gap-2 bg-brand-gold/20 text-brand-gold text-xs px-3 py-1 rounded-full font-heading font-medium mb-3">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>ระบบออนไลน์ทำงานปกติ · วันที่ 17 พฤศจิกายน 2569</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-bold font-heading text-white">ยินดีต้อนรับสู่ระบบหลังบ้าน Tel2Tell Call Center</h1>
+              <p class="text-slate-300 text-sm mt-2 max-w-2xl font-body">
+                ตรวจสอบและบริหารจัดการคำขอรับใบเสนอราคา ผู้สมัครงาน และรายงานประสิทธิภาพการติดต่อจากลูกค้าทั้งแบบฟอร์มเว็บไซต์และแชท
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button onclick="switchTab('leads')" class="px-5 py-2.5 bg-brand-gold hover:bg-amber-300 text-brand-navy font-heading font-bold text-sm rounded-xl transition shadow-lg flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                <span>ดูรายการลูกค้าขอใบเสนอราคา</span>
+              </button>
+              <button onclick="openAddLeadModal()" class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-heading font-medium text-sm rounded-xl transition border border-white/20 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span>+ เพิ่มลูกค้าใหม่</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Card 1 -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">คำขอใบเสนอราคาทั้งหมด</div>
+              <div class="text-3xl font-bold font-heading text-brand-navy mt-1" id="stat-total-leads">0</div>
+              <div class="text-xs text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+                <span>↑ +18%</span> <span class="text-slate-400 font-normal">จากเดือนที่แล้ว</span>
+              </div>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-sky-50 text-brand-accent flex items-center justify-center">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">รอดำเนินการ / ติดต่อกลับ</div>
+              <div class="text-3xl font-bold font-heading text-amber-600 mt-1" id="stat-pending-leads">0</div>
+              <div class="text-xs text-amber-600 font-semibold mt-1 flex items-center gap-1">
+                <span>⚡ ดำเนินการทันที</span>
+              </div>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ผู้สมัครงานทั้งหมด</div>
+              <div class="text-3xl font-bold font-heading text-brand-navy mt-1" id="stat-total-jobs">0</div>
+              <div class="text-xs text-indigo-600 font-semibold mt-1 flex items-center gap-1">
+                <span>3 ตำแหน่งหลักเปิดรับ</span>
+              </div>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">อัตราตอบกลับเฉลี่ย</div>
+              <div class="text-3xl font-bold font-heading text-emerald-600 mt-1">11.4 นาที</div>
+              <div class="text-xs text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+                <span>✓ เร็วกว่ามาตรฐาน SLA</span>
+              </div>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Column Charts / Breakdown -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Recent Inquiries -->
+          <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-lg font-bold font-heading text-brand-navy">รายการติดต่อล่าสุด (Recent Inquiries)</h3>
+                <p class="text-xs text-slate-500">ข้อมูลที่ผู้เยี่ยมชมกรอกผ่านหน้าแรก index.html</p>
+              </div>
+              <button onclick="switchTab('leads')" class="text-xs text-brand-accent hover:underline font-bold">
+                ดูทั้งหมด →
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-semibold uppercase border-b border-slate-200">
+                  <tr>
+                    <th class="py-3 px-3">วันที่/เวลา</th>
+                    <th class="py-3 px-3">ชื่อผู้ติดต่อ / บริษัท</th>
+                    <th class="py-3 px-3">เบอร์โทรศัพท์</th>
+                    <th class="py-3 px-3">บริการที่สนใจ</th>
+                    <th class="py-3 px-3">สถานะ</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardRecentTable" class="divide-y divide-slate-100">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Service Distribution & Channels -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-bold font-heading text-brand-navy mb-1">สัดส่วนบริการที่ลูกค้าสนใจ</h3>
+              <p class="text-xs text-slate-500 mb-5">วิเคราะห์จากแบบฟอร์มคำขอใบเสนอราคา</p>
+
+              <div class="space-y-4 text-xs font-medium">
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-slate-700">Inbound Call Center (รับสายบริการ)</span>
+                    <span class="text-brand-navy font-bold">45%</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2.5">
+                    <div class="bg-brand-navy h-2.5 rounded-full" style="width: 45%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-slate-700">Outbound Telesales (โทรขายสินค้า)</span>
+                    <span class="text-brand-navy font-bold">25%</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2.5">
+                    <div class="bg-brand-gold h-2.5 rounded-full" style="width: 25%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-slate-700">Social Media & Chat Admin 24 ชม.</span>
+                    <span class="text-brand-navy font-bold">18%</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2.5">
+                    <div class="bg-sky-500 h-2.5 rounded-full" style="width: 18%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-slate-700">Onsite / Cloud IP PBX / สื่อทีวี</span>
+                    <span class="text-brand-navy font-bold">12%</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2.5">
+                    <div class="bg-emerald-500 h-2.5 rounded-full" style="width: 12%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 bg-slate-50 rounded-xl p-3 text-xs text-slate-600 flex items-center justify-between">
+              <div>
+                <span class="font-bold text-brand-navy">สถานะเซิร์ฟเวอร์:</span> ทำงานปกติ
+              </div>
+              <button onclick="generateSampleLead()" class="text-brand-accent hover:underline font-bold">
+                + เพิ่ม Lead ทดสอบ
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 2: LEADS CRM ==================== -->
+      <section id="view-leads" class="space-y-6 hidden">
+        <!-- Controls & Filters Header -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold font-heading text-brand-navy">คำขอใบเสนอราคา & ลูกค้าเป้าหมาย (Leads CRM)</h2>
+              <p class="text-xs text-slate-500 mt-0.5">จัดการสถานะการติดต่อ จัดส่งใบเสนอราคา และบันทึกหมายเหตุ</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="exportLeadsCSV()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition border border-slate-300 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span>ส่งออก CSV (Excel)</span>
+              </button>
+              <button onclick="openAddLeadModal()" class="px-4 py-2 bg-brand-navy hover:bg-brand-dark text-white text-xs font-semibold rounded-xl transition shadow flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span>+ เพิ่มลูกค้าใหม่</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters Row -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+            <div class="flex flex-wrap items-center gap-1.5" id="leadFilterButtons">
+              <button onclick="filterLeads('all')" class="lead-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-navy text-white" data-filter="all">ทั้งหมด (<span id="count-all">0</span>)</button>
+              <button onclick="filterLeads('pending')" class="lead-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100" data-filter="pending">รอดำเนินการ (<span id="count-pending">0</span>)</button>
+              <button onclick="filterLeads('contacted')" class="lead-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100" data-filter="contacted">ติดต่อแล้ว (<span id="count-contacted">0</span>)</button>
+              <button onclick="filterLeads('quoted')" class="lead-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100" data-filter="quoted">ส่งใบเสนอราคาแล้ว (<span id="count-quoted">0</span>)</button>
+              <button onclick="filterLeads('won')" class="lead-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100" data-filter="won">ปิดการขายสำเร็จ (<span id="count-won">0</span>)</button>
+              <button onclick="filterLeads('lost')" class="lead-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100" data-filter="lost">ยกเลิก (<span id="count-lost">0</span>)</button>
+            </div>
+
+            <div class="w-full sm:w-64">
+              <input type="text" id="leadSearchInput" oninput="searchLeads(this.value)" placeholder="ค้นหาชื่อ, บริษัท, เบอร์โทร..." class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-gold">
+            </div>
+          </div>
+        </div>
+
+        <!-- Leads Table -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-600 font-semibold uppercase border-b border-slate-200">
+                <tr>
+                  <th class="py-3.5 px-4">วันที่/เวลา</th>
+                  <th class="py-3.5 px-4">ชื่อผู้ติดต่อ / บริษัท</th>
+                  <th class="py-3.5 px-4">เบอร์โทรศัพท์ & อีเมล</th>
+                  <th class="py-3.5 px-4">ความต้องการ / รายละเอียด</th>
+                  <th class="py-3.5 px-4">สถานะ</th>
+                  <th class="py-3.5 px-4 text-center">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="leadsTableBody" class="divide-y divide-slate-100">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+          <div id="noLeadsState" class="p-8 text-center text-slate-400 hidden">
+            <svg class="w-12 h-12 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <p class="text-sm font-medium">ไม่พบข้อมูลลูกค้าในเงื่อนไขนี้</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 3: JOBS HR ==================== -->
+      <section id="view-jobs" class="space-y-6 hidden">
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold font-heading text-brand-navy">จัดการข้อมูลผู้สมัครงาน (HR Recruitment)</h2>
+              <p class="text-xs text-slate-500 mt-0.5">รายชื่อผู้สมัครจากแบบฟอร์มหน้า jobs.html พร้อมข้อมูลคุณสมบัติและประวัติ</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="exportJobsCSV()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition border border-slate-300 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span>ส่งออกผู้สมัคร CSV</span>
+              </button>
+              <a href="jobs.html" target="_blank" class="px-4 py-2 bg-brand-navy hover:bg-brand-dark text-white text-xs font-semibold rounded-xl transition shadow flex items-center gap-1.5">
+                <span>🌐 ดูหน้าสมัครงาน jobs.html</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Position Filter Pills -->
+          <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100">
+            <button onclick="filterJobs('all')" class="job-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-navy text-white" data-jobfilter="all">ทั้งหมด</button>
+            <button onclick="filterJobs('Telesales')" class="job-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100" data-jobfilter="Telesales">Telesales (พนักงานขายทางโทรศัพท์)</button>
+            <button onclick="filterJobs('Admin')" class="job-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100" data-jobfilter="Admin">Admin (แอดมินเพจ / ตอบแชท)</button>
+            <button onclick="filterJobs('Callcenter TV')" class="job-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100" data-jobfilter="Callcenter TV">Callcenter TV (รับสายรายการทีวี)</button>
+          </div>
+        </div>
+
+        <!-- Jobs Table -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-600 font-semibold uppercase border-b border-slate-200">
+                <tr>
+                  <th class="py-3.5 px-4">วันที่สมัคร</th>
+                  <th class="py-3.5 px-4">ชื่อ-นามสกุล</th>
+                  <th class="py-3.5 px-4">ตำแหน่ง</th>
+                  <th class="py-3.5 px-4">อายุ / วุฒิ</th>
+                  <th class="py-3.5 px-4">เบอร์โทรศัพท์</th>
+                  <th class="py-3.5 px-4">ประวัติ / ประสบการณ์</th>
+                  <th class="py-3.5 px-4">สถานะ HR</th>
+                  <th class="py-3.5 px-4 text-center">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="jobsTableBody" class="divide-y divide-slate-100">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 4: SETTINGS ==================== -->
+      <section id="view-settings" class="space-y-6 hidden">
+        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm max-w-3xl space-y-6">
+          <div>
+            <h2 class="text-xl font-bold font-heading text-brand-navy">การตั้งค่าระบบ & การแจ้งเตือน (Notifications)</h2>
+            <p class="text-xs text-slate-500 mt-1">กำหนดการแจ้งเตือนเข้าสู่กลุ่ม LINE หรืออีเมลเมื่อมีลูกค้าหรือผู้สมัครงานใหม่</p>
+          </div>
+
+          <!-- LINE Notify Config -->
+          <div class="space-y-4 pt-4 border-t border-slate-100">
+            <h3 class="text-sm font-bold text-brand-navy flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <span>เชื่อมต่อ LINE Notify / LINE Official Account</span>
+            </h3>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">LINE Notify Token / Webhook URL</label>
+              <input type="text" id="settingLineToken" placeholder="กรอก LINE Token เช่น ABC123xyz..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-brand-gold focus:outline-none">
+              <p class="text-[11px] text-slate-400 mt-1">ระบบจะส่งข้อความแจ้งเตือนชื่อ เบอร์โทร และรายละเอียดลูกค้าเข้ากลุ่ม LINE ทันที</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">อีเมลผู้รับการแจ้งเตือนหลัก</label>
+              <input type="email" value="info@tel2tell.com, nattapon@tel2tell.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-brand-gold focus:outline-none">
+            </div>
+          </div>
+
+          <!-- Reset / Demo Controls -->
+          <div class="space-y-4 pt-6 border-t border-slate-100">
+            <h3 class="text-sm font-bold text-brand-navy">จัดการฐานข้อมูลทดสอบ (Demo Data Management)</h3>
+            <p class="text-xs text-slate-500">สามารถรีเซ็ตข้อมูลตัวอย่างกลับเป็นค่าเริ่มต้น หรือล้างข้อมูลทั้งหมดเพื่อทดสอบส่งจริงได้ตลอดเวลา</p>
+            <div class="flex flex-wrap items-center gap-3">
+              <button onclick="resetDefaultDemoData()" class="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold rounded-xl border border-amber-300 transition">
+                ↻ คืนค่าข้อมูลตัวอย่าง (Reset Demo Data)
+              </button>
+              <button onclick="clearAllData()" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl border border-red-300 transition">
+                🗑️ ล้างข้อมูลทั้งหมด (Clear Storage)
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-slate-100 flex justify-end">
+            <button onclick="alert('บันทึกการตั้งค่าเรียบร้อยแล้ว')" class="px-6 py-2.5 bg-brand-navy hover:bg-brand-dark text-white rounded-xl text-xs font-bold font-heading transition shadow">
+              บันทึกการตั้งค่า
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== MODAL: ADD NEW LEAD ==================== -->
+  <div id="addLeadModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="text-lg font-bold font-heading text-brand-navy">เพิ่มลูกค้าขอรับใบเสนอราคาใหม่</h3>
+        <button onclick="closeAddLeadModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+      <form onsubmit="handleManualAddLead(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">ชื่อผู้ติดต่อ / บริษัท <span class="text-red-500">*</span></label>
+          <input type="text" id="manualName" required placeholder="เช่น คุณสมชาย (บริษัท สยามฟู้ดส์ จำกัด)" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-gold">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ <span class="text-red-500">*</span></label>
+            <input type="tel" id="manualPhone" required placeholder="081-xxx-xxxx" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-gold">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">อีเมล</label>
+            <input type="email" id="manualEmail" placeholder="contact@company.com" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-gold">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">บริการที่สนใจ</label>
+          <select id="manualService" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-gold font-body">
+            <option value="Inbound Call Center (รับสายบริการ)">Inbound Call Center (รับสายบริการ)</option>
+            <option value="Outbound Telesales (ทีมขายโทรออก)">Outbound Telesales (ทีมขายโทรออก)</option>
+            <option value="Admin Social Media & ตอบแชท 24 ชม.">Admin Social Media & ตอบแชท 24 ชม.</option>
+            <option value="Onsite Service (เจ้าหน้าที่ประจำจุด)">Onsite Service (เจ้าหน้าที่ประจำจุด)</option>
+            <option value="สื่อโฆษณาทางทีวี & ผลิต Spot">สื่อโฆษณาทางทีวี & ผลิต Spot</option>
+            <option value="ระบบ Call Center IP PBX Cloud">ระบบ Call Center IP PBX Cloud</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">รายละเอียดความต้องการ</label>
+          <textarea id="manualNote" rows="3" placeholder="ระบุจำนวนที่นั่ง หรือความต้องการเฉพาะ..." class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-gold"></textarea>
+        </div>
+        <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
+          <button type="button" onclick="closeAddLeadModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-medium">ยกเลิก</button>
+          <button type="submit" class="px-5 py-2 bg-brand-navy hover:bg-brand-dark text-white rounded-xl font-bold font-heading shadow">บันทึกลูกค้า</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: LEAD DETAIL VIEW ==================== -->
+  <div id="leadDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="text-lg font-bold font-heading text-brand-navy" id="detailCustomerName">รายละเอียดลูกค้า</h3>
+        <button onclick="closeLeadDetailModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+      <div class="space-y-4 text-xs" id="leadDetailContent">
+        <!-- Injected via JS -->
+      </div>
+      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+        <button onclick="closeLeadDetailModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-medium text-xs">ปิด</button>
+        <div class="flex items-center gap-2" id="detailModalActions">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LOGIC JAVASCRIPT ==================== -->
+  <script>
+    // Initial Realistic Thai Business Leads
+    const DEFAULT_LEADS = [
+      {
+        id: 'L-1029',
+        date: '2026-11-17 10:45',
+        name: 'คุณกิตติศักดิ์ มหาชัย (บจก. สยามเบสท์ ออโต้ พาร์ท)',
+        phone: '089-456-7890',
+        email: 'kittisak@siambestauto.co.th',
+        service: 'Inbound Call Center (รับสายบริการ)',
+        message: 'ต้องการทีมรับสายลูกค้าเคลมอะไหล่และสอบถามข้อมูลสินค้า ประมาณ 4 ที่นั่ง ทำงาน จันทร์-เสาร์ 08.30-17.30 น.',
+        status: 'pending'
+      },
+      {
+        id: 'L-1028',
+        date: '2026-11-17 09:20',
+        name: 'คุณวิภาวรรณ อัครเดช (แบรนด์เครื่องสำอาง Dr.V Glow)',
+        phone: '081-987-6543',
+        email: 'wipawan@drv-skincare.com',
+        service: 'Admin Social Media & ตอบแชท 24 ชม.',
+        message: 'ต้องการจ้างแอดมินตอบแชท LINE OA และ Facebook Inbox สำหรับช่วงยิงแอดโปรโมชั่น 12.12 ตอบตลอด 24 ชม.',
+        status: 'contacted'
+      },
+      {
+        id: 'L-1027',
+        date: '2026-11-16 16:15',
+        name: 'คุณธนพล ศรีสวัสดิ์ (บมจ. ฟินเทค โซลูชั่นส์)',
+        phone: '086-333-2111',
+        email: 'thanapol.s@fintechthai.com',
+        service: 'Outbound Telesales (ทีมขายโทรออก)',
+        message: 'สนใจบริการ Telesales โทรนำเสนอสินเชื่อบุคคลและบัตรเครดิต มีฐานข้อมูลลูกค้าให้ ขอใบเสนอราคา 10 ที่นั่ง',
+        status: 'quoted'
+      },
+      {
+        id: 'L-1026',
+        date: '2026-11-16 14:00',
+        name: 'คุณชนิกา เจริญทรัพย์ (บริษัท เฟรนด์ลี่ โลจิสติกส์ จำกัด)',
+        phone: '082-555-8899',
+        email: 'chanika@friendlygl.com',
+        service: 'ระบบ Call Center IP PBX Cloud',
+        message: 'ต้องการต่อระบบ IP PBX Cloud กับระบบ CRM เดิม พร้อมระบบบันทึกเสียงสนทนาเพื่อตรวจสอบ SLA',
+        status: 'won'
+      },
+      {
+        id: 'L-1025',
+        date: '2026-11-15 11:30',
+        name: 'คุณประดิษฐ์ รัตนพงษ์ (ไทยมาร์เก็ตเพลส)',
+        phone: '085-111-9988',
+        email: 'pradit@thaimarket.co.th',
+        service: 'สื่อโฆษณาทางทีวี & ผลิต Spot',
+        message: 'ขอทราบอัตราค่าบริการลงสื่อโฆษณาทีวีช่องหลัก รายการข่าวช่วงเย็น',
+        status: 'contacted'
+      }
+    ];
+
+    // Initial Realistic Job Applicants
+    const DEFAULT_APPLICANTS = [
+      {
+        id: 'J-501',
+        date: '2026-11-17 08:30',
+        name: 'นางสาวพิมพ์ชนก ใจดี',
+        phone: '092-123-4567',
+        age: 24,
+        edu: 'ปริญญาตรี',
+        position: 'Telesales',
+        exp: 'มีประสบการณ์ขายคอร์สเรียนและประกันทางโทรศัพท์ 2 ปี พูดจาคล่องแคล่ว มีทักษะการเจรจาต่อรอง',
+        status: 'รอสัมภาษณ์'
+      },
+      {
+        id: 'J-502',
+        date: '2026-11-16 15:40',
+        name: 'นายกิตติภูมิ ทรัพย์อนันต์',
+        phone: '084-555-7890',
+        age: 27,
+        edu: 'ปวส.',
+        position: 'Admin',
+        exp: 'เคยเป็นแอดมินเพจขายเสื้อผ้าแฟชั่นและเครื่องดื่ม พิมพ์เร็ว 60 คำ/นาที ใช้งานระบบ Chatbot ได้',
+        status: 'นัดสัมภาษณ์แล้ว'
+      },
+      {
+        id: 'J-503',
+        date: '2026-11-16 11:10',
+        name: 'นางสาวสุดารัตน์ พรหมสิทธิ์',
+        phone: '088-777-6543',
+        age: 29,
+        edu: 'ม.6',
+        position: 'Callcenter TV',
+        exp: 'เคยรับสายรายการทีวีช้อปปิ้ง สามารถทำงานเป็นกะดึกได้ อดทน แก้ไขปัญหาเฉพาะหน้าได้ดี',
+        status: 'ผ่านการคัดเลือก'
+      }
+    ];
+
+    let currentLeadFilter = 'all';
+    let currentJobFilter = 'all';
+
+    // Get Data from LocalStorage
+    function getStoredLeads() {
+      const stored = localStorage.getItem('tel2tell_leads');
+      if (!stored) {
+        localStorage.setItem('tel2tell_leads', JSON.stringify(DEFAULT_LEADS));
+        return DEFAULT_LEADS;
+      }
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        return DEFAULT_LEADS;
+      }
+    }
+
+    function saveStoredLeads(leads) {
+      localStorage.setItem('tel2tell_leads', JSON.stringify(leads));
+    }
+
+    function getStoredApplicants() {
+      const stored = localStorage.getItem('tel2tell_applicants');
+      if (!stored) {
+        localStorage.setItem('tel2tell_applicants', JSON.stringify(DEFAULT_APPLICANTS));
+        return DEFAULT_APPLICANTS;
+      }
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        return DEFAULT_APPLICANTS;
+      }
+    }
+
+    function saveStoredApplicants(apps) {
+      localStorage.setItem('tel2tell_applicants', JSON.stringify(apps));
+    }
+
+    // Authentication
+    function checkAuth() {
+      const isAuth = sessionStorage.getItem('tel2tell_admin_auth');
+      if (isAuth === 'true') {
+        document.getElementById('loginModal').classList.add('hidden');
+        document.getElementById('adminApp').classList.remove('hidden');
+        renderDashboard();
+        renderLeadsTable();
+        renderJobsTable();
+      } else {
+        document.getElementById('loginModal').classList.remove('hidden');
+        document.getElementById('adminApp').classList.add('hidden');
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('loginUser').value.trim();
+      const p = document.getElementById('loginPass').value.trim();
+      if ((u === 'admin' && p === 'tel2tell2026') || (u === 'admin' && p === 'tel2tell')) {
+        sessionStorage.setItem('tel2tell_admin_auth', 'true');
+        checkAuth();
+      } else {
+        alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง (ทดสอบ: admin / tel2tell2026)');
+      }
+    }
+
+    function quickDemoLogin() {
+      sessionStorage.setItem('tel2tell_admin_auth', 'true');
+      checkAuth();
+    }
+
+    function handleLogout() {
+      if (confirm('คุณต้องการออกจากระบบหลังบ้านใช่หรือไม่?')) {
+        sessionStorage.removeItem('tel2tell_admin_auth');
+        checkAuth();
+      }
+    }
+
+    // Tabs
+    function switchTab(tabName) {
+      const tabs = ['dashboard', 'leads', 'jobs', 'settings'];
+      tabs.forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+        if (t === tabName) {
+          view.classList.remove('hidden');
+          btn.classList.add('border-brand-gold', 'text-brand-gold');
+          btn.classList.remove('border-transparent', 'text-slate-400');
+        } else {
+          view.classList.add('hidden');
+          btn.classList.remove('border-brand-gold', 'text-brand-gold');
+          btn.classList.add('border-transparent', 'text-slate-400');
+        }
+      });
+      if (tabName === 'dashboard') renderDashboard();
+      if (tabName === 'leads') renderLeadsTable();
+      if (tabName === 'jobs') renderJobsTable();
+    }
+
+    // Status Badge Helpers
+    function getStatusBadge(status) {
+      switch (status) {
+        case 'pending': return `<span class="badge-pending px-2.5 py-1 rounded-full text-[11px] font-semibold">รอดำเนินการ</span>`;
+        case 'contacted': return `<span class="badge-contacted px-2.5 py-1 rounded-full text-[11px] font-semibold">ติดต่อแล้ว</span>`;
+        case 'quoted': return `<span class="badge-quoted px-2.5 py-1 rounded-full text-[11px] font-semibold">ส่งใบเสนอราคาแล้ว</span>`;
+        case 'won': return `<span class="badge-won px-2.5 py-1 rounded-full text-[11px] font-semibold">ปิดการขายสำเร็จ</span>`;
+        case 'lost': return `<span class="badge-lost px-2.5 py-1 rounded-full text-[11px] font-semibold">ยกเลิก / ไม่สนใจ</span>`;
+        default: return `<span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[11px]">${status}</span>`;
+      }
+    }
+
+    // Render Dashboard
+    function renderDashboard() {
+      const leads = getStoredLeads();
+      const apps = getStoredApplicants();
+
+      document.getElementById('stat-total-leads').innerText = leads.length;
+      document.getElementById('stat-pending-leads').innerText = leads.filter(l => l.status === 'pending').length;
+      document.getElementById('stat-total-jobs').innerText = apps.length;
+
+      document.getElementById('badgeLeadCount').innerText = leads.filter(l => l.status === 'pending').length;
+      document.getElementById('badgeJobCount').innerText = apps.length;
+
+      // Update lead count pills
+      document.getElementById('count-all').innerText = leads.length;
+      document.getElementById('count-pending').innerText = leads.filter(l => l.status === 'pending').length;
+      document.getElementById('count-contacted').innerText = leads.filter(l => l.status === 'contacted').length;
+      document.getElementById('count-quoted').innerText = leads.filter(l => l.status === 'quoted').length;
+      document.getElementById('count-won').innerText = leads.filter(l => l.status === 'won').length;
+      document.getElementById('count-lost').innerText = leads.filter(l => l.status === 'lost').length;
+
+      // Recent 4 table in Dashboard
+      const recent = leads.slice(0, 4);
+      const recentTbody = document.getElementById('dashboardRecentTable');
+      recentTbody.innerHTML = recent.map(l => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="py-3 px-3 text-slate-500 font-mono">${l.date}</td>
+          <td class="py-3 px-3 font-semibold text-brand-navy">${l.name}</td>
+          <td class="py-3 px-3 text-slate-600">${l.phone}</td>
+          <td class="py-3 px-3 text-slate-600">${l.service}</td>
+          <td class="py-3 px-3">${getStatusBadge(l.status)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Leads CRM Table
+    function renderLeadsTable(searchTerm = '') {
+      const leads = getStoredLeads();
+      let filtered = leads;
+
+      if (currentLeadFilter !== 'all') {
+        filtered = filtered.filter(l => l.status === currentLeadFilter);
+      }
+
+      if (searchTerm) {
+        const q = searchTerm.toLowerCase();
+        filtered = filtered.filter(l => 
+          l.name.toLowerCase().includes(q) || 
+          l.phone.includes(q) || 
+          (l.email && l.email.toLowerCase().includes(q)) ||
+          l.service.toLowerCase().includes(q)
+        );
+      }
+
+      const tbody = document.getElementById('leadsTableBody');
+      const emptyState = document.getElementById('noLeadsState');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      tbody.innerHTML = filtered.map(l => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="py-3.5 px-4 text-slate-500 font-mono whitespace-nowrap">
+            <div>${l.date}</div>
+            <div class="text-[10px] text-slate-400">#${l.id}</div>
+          </td>
+          <td class="py-3.5 px-4">
+            <div class="font-bold text-brand-navy">${l.name}</div>
+          </td>
+          <td class="py-3.5 px-4 whitespace-nowrap">
+            <div class="font-mono text-slate-700 font-semibold">${l.phone}</div>
+            <div class="text-[11px] text-slate-400">${l.email || '-'}</div>
+          </td>
+          <td class="py-3.5 px-4">
+            <div class="font-medium text-slate-800">${l.service}</div>
+            <div class="text-[11px] text-slate-500 line-clamp-1 max-w-xs">${l.message || '-'}</div>
+          </td>
+          <td class="py-3.5 px-4 whitespace-nowrap">
+            <select onchange="changeLeadStatus('${l.id}', this.value)" class="text-xs rounded-lg px-2.5 py-1 border border-slate-300 font-medium focus:outline-none focus:ring-1 focus:ring-brand-gold bg-white">
+              <option value="pending" ${l.status === 'pending' ? 'selected' : ''}>⏳ รอดำเนินการ</option>
+              <option value="contacted" ${l.status === 'contacted' ? 'selected' : ''}>📞 ติดต่อแล้ว</option>
+              <option value="quoted" ${l.status === 'quoted' ? 'selected' : ''}>📄 ส่งใบเสนอราคาแล้ว</option>
+              <option value="won" ${l.status === 'won' ? 'selected' : ''}>🎉 ปิดการขายสำเร็จ</option>
+              <option value="lost" ${l.status === 'lost' ? 'selected' : ''}>❌ ยกเลิก</option>
+            </select>
+          </td>
+          <td class="py-3.5 px-4 text-center whitespace-nowrap">
+            <div class="flex items-center justify-center gap-1.5">
+              <button onclick="viewLeadDetail('${l.id}')" title="ดูรายละเอียด" class="p-1.5 text-slate-500 hover:text-brand-navy hover:bg-slate-100 rounded-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+              </button>
+              <a href="tel:${l.phone}" title="โทรหาลูกค้า" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+              </a>
+              <button onclick="deleteLead('${l.id}')" title="ลบรายการ" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterLeads(status) {
+      currentLeadFilter = status;
+      document.querySelectorAll('.lead-filter-btn').forEach(btn => {
+        if (btn.dataset.filter === status) {
+          btn.classList.add('bg-brand-navy', 'text-white');
+          btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        } else {
+          btn.classList.remove('bg-brand-navy', 'text-white');
+          btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+        }
+      });
+      renderLeadsTable(document.getElementById('leadSearchInput').value);
+    }
+
+    function searchLeads(query) {
+      renderLeadsTable(query);
+    }
+
+    function changeLeadStatus(id, newStatus) {
+      const leads = getStoredLeads();
+      const target = leads.find(l => l.id === id);
+      if (target) {
+        target.status = newStatus;
+        saveStoredLeads(leads);
+        renderDashboard();
+      }
+    }
+
+    function deleteLead(id) {
+      if (confirm('คุณต้องการลบรายการลูกค้านี้ใช่หรือไม่?')) {
+        let leads = getStoredLeads();
+        leads = leads.filter(l => l.id !== id);
+        saveStoredLeads(leads);
+        renderDashboard();
+        renderLeadsTable(document.getElementById('leadSearchInput').value);
+      }
+    }
+
+    // Render Jobs HR Table
+    function renderJobsTable() {
+      const apps = getStoredApplicants();
+      let filtered = apps;
+
+      if (currentJobFilter !== 'all') {
+        filtered = filtered.filter(a => a.position === currentJobFilter);
+      }
+
+      const tbody = document.getElementById('jobsTableBody');
+      tbody.innerHTML = filtered.map(a => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="py-3.5 px-4 font-mono text-slate-500 whitespace-nowrap">${a.date}</td>
+          <td class="py-3.5 px-4 font-bold text-brand-navy">${a.name}</td>
+          <td class="py-3.5 px-4">
+            <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-sky-100 text-sky-800">${a.position}</span>
+          </td>
+          <td class="py-3.5 px-4 text-slate-700">${a.age} ปี / ${a.edu}</td>
+          <td class="py-3.5 px-4 font-mono font-semibold text-slate-700">${a.phone}</td>
+          <td class="py-3.5 px-4 text-slate-600 max-w-xs">
+            <div class="line-clamp-2">${a.exp || '-'}</div>
+          </td>
+          <td class="py-3.5 px-4 whitespace-nowrap">
+            <select onchange="changeJobStatus('${a.id}', this.value)" class="text-xs rounded-lg px-2 py-1 border border-slate-300 font-medium focus:outline-none focus:ring-1 focus:ring-brand-gold bg-white">
+              <option value="รอสัมภาษณ์" ${a.status === 'รอสัมภาษณ์' ? 'selected' : ''}>⏳ รอสัมภาษณ์</option>
+              <option value="นัดสัมภาษณ์แล้ว" ${a.status === 'นัดสัมภาษณ์แล้ว' ? 'selected' : ''}>📅 นัดสัมภาษณ์แล้ว</option>
+              <option value="ผ่านการคัดเลือก" ${a.status === 'ผ่านการคัดเลือก' ? 'selected' : ''}>✓ ผ่านการคัดเลือก</option>
+              <option value="ไม่ผ่านเกณฑ์" ${a.status === 'ไม่ผ่านเกณฑ์' ? 'selected' : ''}>✗ ไม่ผ่านเกณฑ์</option>
+            </select>
+          </td>
+          <td class="py-3.5 px-4 text-center whitespace-nowrap">
+            <a href="tel:${a.phone}" class="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-bold px-2 py-1 rounded bg-emerald-50 text-[11px]">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+              <span>โทรสัมภาษณ์</span>
+            </a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterJobs(pos) {
+      currentJobFilter = pos;
+      document.querySelectorAll('.job-filter-btn').forEach(btn => {
+        if (btn.dataset.jobfilter === pos) {
+          btn.classList.add('bg-brand-navy', 'text-white');
+          btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        } else {
+          btn.classList.remove('bg-brand-navy', 'text-white');
+          btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+        }
+      });
+      renderJobsTable();
+    }
+
+    function changeJobStatus(id, newStatus) {
+      const apps = getStoredApplicants();
+      const target = apps.find(a => a.id === id);
+      if (target) {
+        target.status = newStatus;
+        saveStoredApplicants(apps);
+      }
+    }
+
+    // Modals: Detail View
+    function viewLeadDetail(id) {
+      const leads = getStoredLeads();
+      const l = leads.find(item => item.id === id);
+      if (!l) return;
+
+      document.getElementById('detailCustomerName').innerText = l.name;
+      document.getElementById('leadDetailContent').innerHTML = `
+        <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <div><span class="text-slate-400 block">รหัสอ้างอิง:</span> <span class="font-mono font-bold text-slate-800">#${l.id}</span></div>
+          <div><span class="text-slate-400 block">วันที่ส่งคำขอ:</span> <span class="font-medium text-slate-800">${l.date}</span></div>
+          <div><span class="text-slate-400 block">เบอร์โทรศัพท์:</span> <a href="tel:${l.phone}" class="font-mono font-bold text-brand-accent hover:underline">${l.phone}</a></div>
+          <div><span class="text-slate-400 block">อีเมล:</span> <a href="mailto:${l.email}" class="text-slate-700 hover:underline">${l.email || '-'}</a></div>
+        </div>
+        <div>
+          <span class="text-slate-500 font-semibold block mb-1">บริการที่สนใจ:</span>
+          <div class="p-2.5 bg-sky-50 text-sky-900 rounded-xl font-medium border border-sky-200">${l.service}</div>
+        </div>
+        <div>
+          <span class="text-slate-500 font-semibold block mb-1">รายละเอียดและสิ่งที่ต้องการปรึกษา:</span>
+          <div class="p-3 bg-white border border-slate-200 rounded-xl text-slate-700 leading-relaxed">${l.message || 'ไม่มีรายละเอียดเพิ่มเติม'}</div>
+        </div>
+        <div>
+          <span class="text-slate-500 font-semibold block mb-1">สถานะปัจจุบัน:</span>
+          <div>${getStatusBadge(l.status)}</div>
+        </div>
+      `;
+
+      document.getElementById('detailModalActions').innerHTML = `
+        <a href="tel:${l.phone}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold flex items-center gap-1.5 text-xs shadow">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+          <span>โทรหาลูกค้า</span>
+        </a>
+      `;
+
+      document.getElementById('leadDetailModal').classList.remove('hidden');
+    }
+
+    function closeLeadDetailModal() {
+      document.getElementById('leadDetailModal').classList.add('hidden');
+    }
+
+    // Modal: Add Lead Manually
+    function openAddLeadModal() {
+      document.getElementById('addLeadModal').classList.remove('hidden');
+    }
+
+    function closeAddLeadModal() {
+      document.getElementById('addLeadModal').classList.add('hidden');
+    }
+
+    function handleManualAddLead(e) {
+      e.preventDefault();
+      const now = new Date();
+      const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+      
+      const newLead = {
+        id: 'L-' + Math.floor(1000 + Math.random() * 9000),
+        date: dateStr,
+        name: document.getElementById('manualName').value.trim(),
+        phone: document.getElementById('manualPhone').value.trim(),
+        email: document.getElementById('manualEmail').value.trim(),
+        service: document.getElementById('manualService').value,
+        message: document.getElementById('manualNote').value.trim(),
+        status: 'pending'
+      };
+
+      const leads = getStoredLeads();
+      leads.unshift(newLead);
+      saveStoredLeads(leads);
+      closeAddLeadModal();
+      e.target.reset();
+      renderDashboard();
+      renderLeadsTable();
+      alert('เพิ่มลูกค้ารายการใหม่สำเร็จ!');
+    }
+
+    function generateSampleLead() {
+      const now = new Date();
+      const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+      const companies = [
+        { name: 'คุณธวัชชัย (บจก. เอ็นเนอร์ยี่ ซิสเต็ม)', phone: '081-345-6789', service: 'Inbound Call Center (รับสายบริการ)', msg: 'ต้องการทีมรับสายแจ้งเหตุด่วน 24 ชม.' },
+        { name: 'คุณพัชรินทร์ (บมจ. ฟาร์ม่าแคร์ ประเทศไทย)', phone: '089-876-5432', service: 'Outbound Telesales (ทีมขายโทรออก)', msg: 'ขอใบเสนอราคาแคมเปญแนะนำอาหารเสริม 6 ที่นั่ง' },
+        { name: 'คุณอิทธิพล (ร้านค้าทอง สุวรรณภูมิ)', phone: '086-555-1234', service: 'Admin Social Media & ตอบแชท 24 ชม.', msg: 'ต้องการทีมแอดมินปิดการขายและตอบแชทหน้าร้าน' }
+      ];
+      const pick = companies[Math.floor(Math.random() * companies.length)];
+      const sample = {
+        id: 'L-' + Math.floor(1000 + Math.random() * 9000),
+        date: dateStr,
+        name: pick.name,
+        phone: pick.phone,
+        email: 'info@testcompany.co.th',
+        service: pick.service,
+        message: pick.msg,
+        status: 'pending'
+      };
+      const leads = getStoredLeads();
+      leads.unshift(sample);
+      saveStoredLeads(leads);
+      renderDashboard();
+      renderLeadsTable();
+      alert('สร้างข้อมูลจำลองทดสอบเรียบร้อยแล้ว: ' + pick.name);
+    }
+
+    // CSV Exports (with UTF-8 BOM for Thai Excel Support)
+    function exportLeadsCSV() {
+      const leads = getStoredLeads();
+      let csv = '\uFEFF';
+      csv += 'รหัส,วันที่ส่งคำขอ,ชื่อผู้ติดต่อ/บริษัท,เบอร์โทรศัพท์,อีเมล,บริการที่สนใจ,รายละเอียด,สถานะ\n';
+      leads.forEach(l => {
+        csv += `"${l.id}","${l.date}","${l.name}","${l.phone}","${l.email || ''}","${l.service}","${(l.message || '').replace(/"/g, '""')}","${l.status}"\n`;
+      });
+      downloadFile(csv, 'tel2tell_leads_export.csv', 'text/csv;charset=utf-8;');
+    }
+
+    function exportJobsCSV() {
+      const apps = getStoredApplicants();
+      let csv = '\uFEFF';
+      csv += 'รหัส,วันที่สมัคร,ชื่อ-นามสกุล,ตำแหน่ง,อายุ,วุฒิการศึกษา,เบอร์โทรศัพท์,ประวัติ,สถานะ\n';
+      apps.forEach(a => {
+        csv += `"${a.id}","${a.date}","${a.name}","${a.position}","${a.age}","${a.edu}","${a.phone}","${(a.exp || '').replace(/"/g, '""')}","${a.status}"\n`;
+      });
+      downloadFile(csv, 'tel2tell_job_applicants.csv', 'text/csv;charset=utf-8;');
+    }
+
+    function downloadFile(content, fileName, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function resetDefaultDemoData() {
+      if (confirm('คุณต้องการรีเซ็ตข้อมูลตัวอย่างกลับเป็นค่าเริ่มต้นหรือไม่?')) {
+        localStorage.setItem('tel2tell_leads', JSON.stringify(DEFAULT_LEADS));
+        localStorage.setItem('tel2tell_applicants', JSON.stringify(DEFAULT_APPLICANTS));
+        renderDashboard();
+        renderLeadsTable();
+        renderJobsTable();
+        alert('รีเซ็ตข้อมูลตัวอย่างเรียบร้อยแล้ว');
+      }
+    }
+
+    function clearAllData() {
+      if (confirm('คุณแน่ใจว่าต้องการล้างข้อมูลทั้งหมดหรือไม่? (ข้อมูลจะว่างเปล่าเพื่อรอรับของจริง)')) {
+        localStorage.setItem('tel2tell_leads', JSON.stringify([]));
+        localStorage.setItem('tel2tell_applicants', JSON.stringify([]));
+        renderDashboard();
+        renderLeadsTable();
+        renderJobsTable();
+        alert('ล้างข้อมูลทั้งหมดเรียบร้อยแล้ว');
+      }
+    }
+
+    // Auto-check auth on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+    });
+  </script>
+</body>
+</html>
